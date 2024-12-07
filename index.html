@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+  <head>
+    <title>File List</title>
+  </head>
+  <body>
+    <h1>File List</h1>
+    <ul></ul>
+    <script>
+      fetch("/files")
+        .then((response) => response.json())
+        .then((files) => {
+          const list = document.querySelector("ul");
+          files.forEach((file) => {
+            const li = document.createElement("li");
+            const a = document.createElement("a");
+            a.href = file;
+            a.textContent = file;
+            li.appendChild(a);
+            list.appendChild(li);
+          });
+        });
+    </script>
+  </body>
+</html>
