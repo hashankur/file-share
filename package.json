@@ -10,6 +10,7 @@
 		"@elysiajs/static": "^1.3.0",
 		"@tailwindcss/cli": "^4.1.10",
 		"elysia": "latest",
+		"elysia-rate-limit": "^4.4.0",
 		"tailwindcss": "^4.1.10"
 	},
 	"devDependencies": {

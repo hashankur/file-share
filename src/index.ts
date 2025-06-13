@@ -1,6 +1,7 @@
 import { Elysia } from "elysia";
 import { html } from "@elysiajs/html";
 import { staticPlugin } from "@elysiajs/static";
+import { rateLimit } from "elysia-rate-limit";
 import { groupByFolderName, traverse } from "./util/file";
 import { address } from "@/util/network";
 import HomePage from "@/views/home";
@@ -28,6 +29,12 @@ const app = new Elysia()
       prefix: "/assets",
       assets: FILE_DIRECTORY,
       enableDecodeURI: true,
+    }),
+  )
+  .use(
+    rateLimit({
+      duration: 60000, // 1 minute window
+      max: 10, // max requests per window per IP
     }),
   )
   .get("/", () => {
