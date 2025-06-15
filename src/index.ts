@@ -10,17 +10,6 @@ import { type File } from "@/types/file";
 const PORT = 8081;
 export const FILE_DIRECTORY = "public";
 
-Bun.spawn({
-  cmd: [
-    "bunx",
-    "tailwindcss",
-    "-i",
-    "./src/assets/main.css",
-    "-o",
-    "./public/output.css",
-  ],
-});
-
 const app = new Elysia()
   .use(html())
   .use(staticPlugin({ prefix: "/", noCache: true }))
