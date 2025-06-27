@@ -1,15 +1,9 @@
 import { Html } from "@elysiajs/html";
-import { groupByFolderName, traverse } from "@/util/file";
-import { type File } from "@/types/file";
-import { FILE_DIRECTORY } from "@/.";
+import type { File } from "@/types/file";
 
 const TITLE = "File Share";
 
-export default function HomePage() {
-  const files: File[] = [];
-  traverse(FILE_DIRECTORY, files);
-  const payload = groupByFolderName(files);
-
+export default function HomePage(payload) {
   return (
     <html lang="en">
       <head>
@@ -29,13 +23,13 @@ export default function HomePage() {
               </h2>
               <div class="flex flex-col divide-y-1 divide-neutral-800">
                 {payload[folder]
-                  ?.sort((a, b) =>
+                  ?.sort((a: { filename: string }, b: { filename: string }) =>
                     new Intl.Collator().compare(a.filename, b.filename),
                   )
-                  .map((file) => (
+                  .map((file: File) => (
                     <a
                       class="text-blue-400 p-3 hover:bg-neutral-400 hover:text-neutral-950 visited:text-purple-400"
-                      href={`assets/${file.folder ? file.folder + "/" : ""}${file.filename}`}
+                      href={`/download/${file.id}`}
                     >
                       {file.filename}
                     </a>
