@@ -1,5 +1,6 @@
 import { html } from "@elysiajs/html";
 import { staticPlugin } from "@elysiajs/static";
+import { logger } from "@tqman/nice-logger";
 import { Elysia } from "elysia";
 import { rateLimit } from "elysia-rate-limit";
 import type { File } from "@/types/file";
@@ -23,6 +24,7 @@ const app = new Elysia()
       max: 10, // max requests per window per IP
     }),
   )
+  .use(logger({ withTimestamp: true }))
   .get("/", () => {
     return HomePage(filesGrouped);
   })
