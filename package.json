@@ -14,7 +14,6 @@
     "@tqman/nice-logger": "^1.1.1",
     "archiver": "^7.0.1",
     "elysia": "latest",
-    "elysia-rate-limit": "^4.4.0",
     "tailwindcss": "^4.1.10"
   },
   "devDependencies": {

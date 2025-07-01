@@ -3,7 +3,6 @@ import { staticPlugin } from "@elysiajs/static";
 import { logger } from "@tqman/nice-logger";
 import archiver from "archiver";
 import { Elysia } from "elysia";
-import { rateLimit } from "elysia-rate-limit";
 import path from "path";
 import { Readable as NodeReadable } from "stream";
 import type { File } from "@/types/file";
@@ -21,12 +20,6 @@ const filesGrouped = groupByFolderName(files);
 const app = new Elysia()
   .use(html())
   .use(staticPlugin({ prefix: "/", noCache: true }))
-  .use(
-    rateLimit({
-      duration: 60000, // 1 minute window
-      max: 10, // max requests per window per IP
-    }),
-  )
   .use(logger({ withTimestamp: true }))
   .get("/", () => {
     return HomePage(filesGrouped);
