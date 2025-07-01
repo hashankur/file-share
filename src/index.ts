@@ -1,8 +1,11 @@
 import { html } from "@elysiajs/html";
 import { staticPlugin } from "@elysiajs/static";
 import { logger } from "@tqman/nice-logger";
+import archiver from "archiver";
 import { Elysia } from "elysia";
 import { rateLimit } from "elysia-rate-limit";
+import path from "path";
+import { Readable as NodeReadable } from "stream";
 import type { File } from "@/types/file";
 import { groupByFolderName, traverse } from "@/util/file";
 import { address } from "@/util/network";
@@ -53,6 +56,52 @@ const app = new Elysia()
 
     console.info(item.filename);
     return new Response(file, { headers });
+  })
+  .get("/download", async ({ query: { folder } }) => {
+    if (!folder) {
+      return new Response("Folder name query parameter is required", {
+        status: 400,
+      });
+    }
+
+    const archive = archiver("zip");
+    const folderFiles = filesGrouped[folder as string];
+
+    if (!folderFiles || folderFiles.length === 0) {
+      // Ensure the archive stream is ended even if no files are added
+      archive.finalize();
+      return new Response("Folder not found or is empty", { status: 404 });
+    }
+
+    for (const item of folderFiles) {
+      const filePath = path.join(
+        FILE_DIRECTORY,
+        item.folder ? `${item.folder}/${item.filename}` : item.filename,
+      );
+      try {
+        // Add file to archive using its stream. Bun.file().stream() returns a ReadableStream.
+        // Convert Web ReadableStream to Node.js Readable stream for archiver compatibility.
+        const fileStream = NodeReadable.from(Bun.file(filePath).stream());
+        archive.append(fileStream, { name: item.filename });
+      } catch (error) {
+        console.error(`Failed to add file ${item.filename} to archive:`, error);
+      }
+    }
+
+    // Finalize the archive stream once all files are added
+    archive.finalize();
+
+    // The archive stream itself is a Node.js Readable stream, convert it to Web ReadableStream for Response
+    const content = NodeReadable.toWeb(archive) as ReadableStream<Uint8Array>;
+
+    const headers = new Headers();
+    headers.set("Content-Type", "application/zip");
+    headers.set(
+      "Content-Disposition",
+      `attachment; filename*=UTF-8''${encodeURIComponent(folder)}.zip`,
+    );
+
+    return new Response(content, { headers });
   })
   .listen({ port: PORT, idleTimeout: 30 });
 
