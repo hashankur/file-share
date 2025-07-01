@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import type { File } from "@/types/file";
-import { FILE_DIRECTORY } from "@/.";
+import { fileDirectory } from "@/.";
 import { randomUUID } from "crypto";
 
 export function traverse(dir: string, files: File[]) {
@@ -10,7 +10,7 @@ export function traverse(dir: string, files: File[]) {
     if (fs.statSync(fullPath).isDirectory()) {
       traverse(fullPath, files);
     } else {
-      const folderName = dir.replace(FILE_DIRECTORY, "");
+      const folderName = dir.replace(fileDirectory, "");
       files.push({
         folder: folderName === "" ? null : folderName,
         filename: file,

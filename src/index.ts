@@ -13,8 +13,9 @@ import HomePage from "@/views/home";
 const PORT = 8081;
 export const FILE_DIRECTORY = "public";
 
+export const fileDirectory = path.normalize(FILE_DIRECTORY + path.sep);
 const files: File[] = [];
-traverse(FILE_DIRECTORY, files);
+traverse(fileDirectory, files);
 const filesGrouped = groupByFolderName(files);
 
 const app = new Elysia()
@@ -36,7 +37,7 @@ const app = new Elysia()
 
     const path = new URL(
       item.folder ? `${item.folder}/${item.filename}` : item.filename,
-      `file://${FILE_DIRECTORY}`,
+      `file://${fileDirectory}`,
     );
     const file = Bun.file(path);
 
@@ -68,7 +69,7 @@ const app = new Elysia()
 
     for (const item of folderFiles) {
       const filePath = path.join(
-        FILE_DIRECTORY,
+        fileDirectory,
         item.folder ? `${item.folder}/${item.filename}` : item.filename,
       );
       try {
