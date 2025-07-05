@@ -7,7 +7,7 @@ A simple file sharing server with interactive folder selection.
 
 ## Features
 
-- Interactive folder selection with fuzzy search
+- Interactive folder selection
 - Browse and download individual files
 - Download entire folders as ZIP archives
 - Recursive file scanning
