@@ -5,18 +5,53 @@ import archiver from "archiver";
 import { Elysia } from "elysia";
 import path from "path";
 import { Readable as NodeReadable } from "stream";
+import inquirer from "inquirer";
+import inquirerDirectory from "inquirer-directory";
 import type { File } from "@/types/file";
 import { groupByFolderName, traverse } from "@/util/file";
 import { address } from "@/util/network";
 import HomePage from "@/views/home";
 
 const PORT = 8081;
-export const FILE_DIRECTORY = "public";
 
-export const fileDirectory = path.normalize(FILE_DIRECTORY + path.sep);
-const files: File[] = [];
-traverse(fileDirectory, files);
-const filesGrouped = groupByFolderName(files);
+inquirer.registerPrompt("directory", inquirerDirectory);
+
+async function selectFolder(): Promise<string> {
+  const homeDir = process.env.HOME || process.env.USERPROFILE || process.cwd();
+
+  const answers = await inquirer.prompt([
+    {
+      type: "directory",
+      name: "path",
+      message: "Select a folder to share:",
+      basePath: homeDir,
+    },
+  ]);
+
+  // If the path is relative, resolve it from the basePath (homeDir)
+  // If it's already absolute, path.resolve will return it as-is
+  return path.isAbsolute(answers.path)
+    ? answers.path
+    : path.resolve(homeDir, answers.path);
+}
+
+async function initializeServer() {
+  const selectedFolder = await selectFolder();
+  console.log(`Selected folder: ${selectedFolder}`);
+
+  console.log("Scanning files...");
+  const fileDirectory = path.normalize(selectedFolder + path.sep);
+  const files: File[] = [];
+  traverse(fileDirectory, files, fileDirectory);
+  const filesGrouped = groupByFolderName(files);
+
+  console.log(
+    `Found ${files.length} files in ${Object.keys(filesGrouped).length} folders`,
+  );
+  return { fileDirectory, files, filesGrouped };
+}
+
+const { fileDirectory, files, filesGrouped } = await initializeServer();
 
 const app = new Elysia()
   .use(html())
@@ -99,4 +134,4 @@ const app = new Elysia()
   })
   .listen({ port: PORT, idleTimeout: 30 });
 
-console.log(`Server is running at ${address()}:${app.server?.port}`);
+console.log(`\nServer is running at ${address()}:${app.server?.port}\n`);

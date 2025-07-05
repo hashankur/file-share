@@ -1,6 +1,6 @@
 {
   "name": "file-share",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "bun tailwind; bun run src/index.ts",
@@ -14,10 +14,13 @@
     "@tqman/nice-logger": "^1.1.1",
     "archiver": "^7.0.1",
     "elysia": "latest",
+    "inquirer": "^12.7.0",
+    "inquirer-directory": "^2.2.0",
     "tailwindcss": "^4.1.10"
   },
   "devDependencies": {
     "@types/archiver": "^6.0.3",
+    "@types/inquirer": "^9.0.8",
     "bun-types": "latest"
   },
   "module": "src/index.js"

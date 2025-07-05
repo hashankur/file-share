@@ -1,14 +1,13 @@
+import { randomUUID } from "crypto";
 import fs from "fs";
 import path from "path";
 import type { File } from "@/types/file";
-import { fileDirectory } from "@/.";
-import { randomUUID } from "crypto";
 
-export function traverse(dir: string, files: File[]) {
+export function traverse(dir: string, files: File[], fileDirectory: string) {
   fs.readdirSync(dir).forEach((file) => {
     const fullPath = path.join(dir, file);
     if (fs.statSync(fullPath).isDirectory()) {
-      traverse(fullPath, files);
+      traverse(fullPath, files, fileDirectory);
     } else {
       const folderName = dir.replace(fileDirectory, "");
       files.push({
