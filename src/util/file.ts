@@ -11,7 +11,7 @@ export function traverse(dir: string, files: File[], fileDirectory: string) {
     } else {
       const folderName = dir.replace(fileDirectory, "");
       files.push({
-        folder: folderName === "" ? null : folderName,
+        folder: folderName === "" ? "/" : folderName,
         filename: file,
         id: randomUUID(),
       });

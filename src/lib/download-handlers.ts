@@ -12,7 +12,7 @@ export function downloadFile(fileDirectory: string, files: File[]) {
     }
 
     const path = new URL(
-      item.folder ? `${item.folder}/${item.filename}` : item.filename,
+      item.folder !== "/" ? `${item.folder}/${item.filename}` : item.filename,
       `file://${fileDirectory}`,
     );
     const file = Bun.file(path);

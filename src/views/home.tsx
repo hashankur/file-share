@@ -3,7 +3,7 @@ import type { File } from "@/types/file";
 
 const TITLE = "File Share";
 
-export default function HomePage(payload) {
+export default function HomePage(payload: Partial<Record<string, File[]>>) {
   return (
     <html lang="en">
       <head>
