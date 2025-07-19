@@ -23,9 +23,10 @@ export function downloadFile(fileDirectory: string, files: File[]) {
       "Content-Disposition",
       `attachment; filename*=UTF-8''${encodeURIComponent(item.filename)}`,
     );
+    headers.set("Content-Length", file.size.toString());
 
     console.info(item.filename);
-    return new Response(file, { headers });
+    return new Response(file.stream(), { headers });
   };
 }
 
