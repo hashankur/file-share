@@ -1,4 +1,3 @@
-import { randomUUID } from "crypto";
 import fs from "fs";
 import path from "path";
 import type { File } from "@/types/file";
@@ -13,7 +12,6 @@ export function traverse(dir: string, files: File[], fileDirectory: string) {
       files.push({
         folder: folderName === "" ? "/" : folderName,
         filename: file,
-        id: randomUUID(),
       });
     }
   });

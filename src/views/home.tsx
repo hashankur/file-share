@@ -22,7 +22,7 @@ export default function HomePage(payload: Partial<Record<string, File[]>>) {
               <details class="group">
                 <summary class="flex items-center border-b-2 border-neutral-600 gap-3">
                   <h2 class="text-lg/loose md:text-xl/loose font-bold grow flex items-center">
-                    <a href={`/download?folder=${folder}`} class="p-2">
+                    <a href={`/download/folder/${folder}`} class="p-2">
                       <img
                         src="/icons/folder-down.svg"
                         alt="Folder Download Icon"
@@ -52,7 +52,7 @@ export default function HomePage(payload: Partial<Record<string, File[]>>) {
                     .map((file: File) => (
                       <a
                         class="text-blue-400 px-5 py-3 hover:bg-neutral-900 visited:text-purple-400"
-                        href={`/download/${file.id}`}
+                        href={`/download/file/${file.filename}`}
                       >
                         {file.filename}
                       </a>

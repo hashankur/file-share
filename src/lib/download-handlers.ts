@@ -4,8 +4,8 @@ import { Readable as NodeReadable } from "stream";
 import type { File } from "@/types/file";
 
 export function downloadFile(fileDirectory: string, files: File[]) {
-  return ({ params: { id } }: { params: { id: string } }) => {
-    const item = files.find((file) => file.id === id);
+  return ({ params: { file } }: { params: { file: string } }) => {
+    const item = files.find((item) => item.filename === file);
 
     if (!item) {
       return new Response("File not found", { status: 404 });
@@ -15,18 +15,17 @@ export function downloadFile(fileDirectory: string, files: File[]) {
       item.folder !== "/" ? `${item.folder}/${item.filename}` : item.filename,
       `file://${fileDirectory}`,
     );
-    const file = Bun.file(path);
+    const fileStream = Bun.file(path);
 
     const headers = new Headers();
-    headers.set("Content-Type", file.type);
+    headers.set("Content-Type", fileStream.type);
     headers.set(
       "Content-Disposition",
       `attachment; filename*=UTF-8''${encodeURIComponent(item.filename)}`,
     );
-    headers.set("Content-Length", file.size.toString());
+    headers.set("Content-Length", fileStream.size.toString());
 
-    console.info(item.filename);
-    return new Response(file.stream(), { headers });
+    return new Response(fileStream.stream(), { headers });
   };
 }
 
@@ -34,7 +33,9 @@ export function downloadFolder(
   fileDirectory: string,
   filesGrouped: Partial<Record<string, File[]>>,
 ) {
-  return async ({ query: { folder } }: { query: { folder?: string } }) => {
+  return async ({ params }: { params: { "*": string } }) => {
+    const folder = decodeURIComponent(params["*"]);
+
     if (!folder) {
       return new Response("Folder name query parameter is required", {
         status: 400,

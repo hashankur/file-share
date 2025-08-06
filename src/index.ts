@@ -32,8 +32,8 @@ async function startServer() {
     .get("/files", () => {
       return filesGrouped;
     })
-    .get("/download/:id", downloadFile(fileDirectory, files))
-    .get("/download", downloadFolder(fileDirectory, filesGrouped))
+    .get("/download/file/:file", downloadFile(fileDirectory, files))
+    .get("/download/folder/*", downloadFolder(fileDirectory, filesGrouped))
     .listen({ port: PORT, idleTimeout: 30 });
 
   console.log(`Server is running at ${address()}:${app.server?.port}\n`);
